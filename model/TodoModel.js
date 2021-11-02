@@ -3,7 +3,7 @@ const Schema = mongoose.Schema;
 
 const TodoSchema = new Schema({
 
-    userinfo : {
+    user : {
         type : mongoose.Schema.Types.ObjectId,
         ref : 'User'
     },

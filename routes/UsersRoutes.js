@@ -5,7 +5,7 @@ let UserController = require('../contoller/UserController');
 let authenticate = require('../security/authenticate');
 
 /* GET users listing. */
-UserRouter.get('/',authenticate.verifyUser,UserController.getAllUser);
+UserRouter.get('/',UserController.getAllUser);
 UserRouter.post('/signup',UserController.signup);
 UserRouter.post('/login',passport.authenticate('local'),UserController.login);
 

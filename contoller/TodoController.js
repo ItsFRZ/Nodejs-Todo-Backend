@@ -3,11 +3,26 @@ const TodoModel = require('../model/TodoModel');
 
 exports.getAllTodo = (req,res,next) => {
     TodoModel.find({})
+    .populate('user')
     .then((todo) => {
         if(todo){
-            res.statusCode = 200;
-            res.setHeader('Content-Type','application/json');
-            res.json(todo);
+            
+            console.log(req.user._id);
+            res.end('Hello World!');
+            // console.log(user);
+            // console.log("Request Id : "+req.user.id);
+//             console.log("Id From Todo : "+todo);
+         
+
+                // TodoModel.findById(req.user._id)
+                // .then((newtodo) => {
+                //     res.statusCode = 200;
+                //     res.setHeader('Content-Type','application/json');
+                //     res.json(newtodo);         
+
+                // })
+
+
         }
     },(err) => next(err))
     .catch((err) => next(err));
@@ -17,9 +32,23 @@ exports.insertTodo = (req,res,next) => {
     TodoModel.create(req.body)
     .then((todo) => {
         if(todo){
-            res.statusCode = 200;
-            res.setHeader('Content-Type','application/json');
-            res.json({status : true , success : 'Todo Inserted Successfull !', todo : todo});
+           
+            if(req.user._id){
+                todo.user = req.user._id;
+                todo.save()
+                .then((todo) => {
+                    res.statusCode = 200;
+                    res.setHeader('Content-Type','application/json');
+                    res.json({status : true , success : 'Todo Inserted Successfull !', todo : todo});
+                })
+            }else{
+                let err = new Error('User is not authorized');
+                err.status = 401;
+                return next(err);
+
+            }
+
+
         }
     },(err) => next(err))
     .catch((err) => next(err));
