@@ -9,6 +9,7 @@ let usersRouter = require('./routes/UsersRoutes');
 
 let config = require('./config/config');
 let mongoose = require('mongoose');
+const passport = require('passport');
 let connect = mongoose.connect(config.db.url);
 
 // Connection with database
@@ -20,7 +21,7 @@ connect
 let app = express();
 
 
-
+app.use(passport.initialize());
 app.use(logger(config.env));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));

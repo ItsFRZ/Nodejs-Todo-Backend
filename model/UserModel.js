@@ -6,21 +6,25 @@ const UserSchema = new Schema({
 
     firstname : {
         type : String,
-        required : true
+        default : ''
     },
     lastname : {
         type : String,
-        required : true
+        default : ''         
     },
-    mobileNo : {
+    mobileno : {
         type : String,
-        required : true,
-        unique : true
+        unique : true,
+        default : ''
     },
-    email : {
+    emailid : {
         type : String,
-        required : true,
-        unique : true
+        unique : true,
+        default : ''
+    },
+    admin : {
+        type : Boolean,
+        default : false
     }
 
 },{
