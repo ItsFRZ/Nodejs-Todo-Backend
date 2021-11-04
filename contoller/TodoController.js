@@ -5,23 +5,31 @@ exports.getAllTodo = (req,res,next) => {
     TodoModel.find({})
     .populate('user')
     .then((todo) => {
-        if(todo){
+        if(todo != null && req.user._id != null){
             
-            console.log(req.user._id);
-            res.end('Hello World!');
-            // console.log(user);
-            // console.log("Request Id : "+req.user.id);
-//             console.log("Id From Todo : "+todo);
-         
+            let data = todo;
+            let flag = false;
+            
+            let personalUserData = [];
 
-                // TodoModel.findById(req.user._id)
-                // .then((newtodo) => {
-                //     res.statusCode = 200;
-                //     res.setHeader('Content-Type','application/json');
-                //     res.json(newtodo);         
+            for(let i = 0; i < data.length ;i++){
+                if((data[i].user._id).toString() == (req.user._id).toString())
+                    {
+                        flag = true;
+                        personalUserData.push(data[i]);
+                    }
+            }
 
-                // })
 
+            if(flag){
+                res.statusCode = 200;
+                res.setHeader('Content-Type','application/json');
+                res.json(personalUserData);   
+            }else{
+                res.statusCode = 404;
+                res.setHeader('Content-Type','application/json');
+                res.json({status : true , msg : "User Data not found"});   
+            }
 
         }
     },(err) => next(err))
@@ -56,15 +64,44 @@ exports.insertTodo = (req,res,next) => {
 
 exports.removeAllTodo = (req,res,next) => {
 
-    TodoModel.remove({})
+    TodoModel.find({})
+    .populate('user')
     .then((todo) => {
-        if(todo){
-            res.statusCode = 200;
-            res.setHeader('Content-Type','application/json');
-            res.json({status : true , success : 'Todo Deleted Successfully !', todo : todo});
+        if(todo != null && req.user._id != null){
+            
+            let data = todo;
+            let flag = false;
+            
+
+            for(let i = 0; i < data.length ;i++){
+                if((data[i].user._id).toString() == (req.user._id).toString())
+                    {
+                        flag = true;
+                        todo[i].pop();
+                    }
+            }
+
+
+            if(flag){
+                           
+                todo.save()
+                .then((todo) => {
+                    res.statusCode = 200;
+                    res.setHeader('Content-Type','application/json');
+                    res.json({status : true , success : 'Todo Deleted Successfull !'});
+                })
+
+            }else{
+                res.statusCode = 404;
+                res.setHeader('Content-Type','application/json');
+                res.json({status : true , msg : "User Data not found"});   
+            }
+
         }
     },(err) => next(err))
     .catch((err) => next(err));
+
+
 
 }
 
